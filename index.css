@@ -177,6 +177,13 @@ nav .container {
     border-radius: 30px;
     filter: drop-shadow(0 0 50px var(--primary-glow));
     animation: float 6s ease-in-out infinite;
+
+    /* Blending and Transparency */
+    mix-blend-mode: screen;
+    /* Hace que el fondo negro sea transparente */
+    mask-image: radial-gradient(circle, black 40%, rgba(0, 0, 0, 0) 90%);
+    /* Suaviza los bordes hacia afuera */
+    -webkit-mask-image: radial-gradient(circle, black 40%, rgba(0, 0, 0, 0) 90%);
 }
 
 @keyframes float {
