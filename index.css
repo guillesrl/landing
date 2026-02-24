@@ -178,10 +178,10 @@ nav .container {
     filter: drop-shadow(0 0 50px var(--primary-glow));
     animation: float 6s ease-in-out infinite;
 
-    /* Blending and Transparency - Focused Bottom Fade */
+    /* Blending and Transparency - Shifted Focus Upwards */
     mix-blend-mode: screen;
-    mask-image: radial-gradient(ellipse at 50% 35%, black 20%, rgba(0, 0, 0, 0) 80%);
-    -webkit-mask-image: radial-gradient(ellipse at 50% 35%, black 20%, rgba(0, 0, 0, 0) 80%);
+    mask-image: radial-gradient(ellipse at 50% 25%, black 15%, rgba(0, 0, 0, 0) 75%);
+    -webkit-mask-image: radial-gradient(ellipse at 50% 25%, black 15%, rgba(0, 0, 0, 0) 75%);
 }
 
 @keyframes float {
