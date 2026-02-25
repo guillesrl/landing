@@ -128,7 +128,13 @@
                 <h2>¿Listo para dar el salto?</h2>
                 <p style="margin-bottom: 2rem;">Transforma tu negocio hoy mismo con automatizaciones diseñadas
                     específicamente para ti.</p>
-                <a href="mailto:guillesrl@gmail.com" class="btn btn-primary">Agendar Consultoría Gratuita</a>
+
+                <form action="https://n8n.guillers.es/webhook/contacto-landing" method="POST" class="contact-form">
+                    <input type="text" name="nombre" placeholder="Tu nombre" required>
+                    <input type="tel" name="telefono" placeholder="Tu WhatsApp" required>
+                    <button type="submit" class="btn btn-primary">Solicitar Auditoría IA</button>
+                </form>
+
                 <p style="margin-top: 1.5rem; font-size: 0.8rem; color: var(--text-muted);">Sin compromiso |
                     Configuración en 48h</p>
             </div>
