@@ -130,8 +130,17 @@
                     específicamente para ti.</p>
 
                 <form action="https://n8n.guillers.es/webhook/contacto-landing" method="POST" class="contact-form">
-                    <input type="text" name="nombre" placeholder="Tu nombre" required>
-                    <input type="tel" name="telefono" placeholder="Tu WhatsApp" required>
+                    <input type="text" name="Nombre" placeholder="Tu nombre" required>
+                    <input type="email" name="Email" placeholder="Tu email" required>
+                    <input type="tel" name="Telefono" placeholder="Tu WhatsApp" required>
+                    <select name="Interes" required
+                        style="padding: 1rem 1.5rem; border-radius: 12px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border); color: var(--text); font-size: 1rem; cursor: pointer;">
+                        <option value="" disabled selected>¿Qué te interesa automatizar?</option>
+                        <option value="Inmobiliaria">Gestión Inmobiliaria</option>
+                        <option value="Estetica">Centro de Estética / Peluquería</option>
+                        <option value="Restaurante">Restaurante / Reservas</option>
+                        <option value="Otros">Otros (Consultar)</option>
+                    </select>
                     <button type="submit" class="btn btn-primary">Solicitar Auditoría IA</button>
                 </form>
 
