@@ -203,8 +203,8 @@
                 </div>
                 <div>
                     <h4>Legal</h4>
-                    <p style="margin-top: 1rem;">Aviso Legal</p>
-                    <p>Privacidad</p>
+                    <p style="margin-top: 1rem;" class="footer-link">Aviso Legal</p>
+                    <p class="footer-link" id="privacyBtn">Privacidad</p>
                 </div>
             </div>
             <div
@@ -213,6 +213,36 @@
             </div>
         </div>
     </footer>
+
+    <!-- Privacy Policy Modal -->
+    <div class="modal-overlay" id="privacyModal">
+        <div class="modal-content">
+            <button class="modal-close" id="closeModal">&times;</button>
+            <h2>Política de <span class="text-gradient">Privacidad</span></h2>
+            <p><strong>Última actualización:</strong> 25 de febrero de 2026</p>
+            <p>En Automatizaciones IA, nos tomamos muy en serio la protección de sus datos. Al utilizar nuestro
+                formulario, recopilamos información básica como su nombre, email, teléfono y sector de interés
+                únicamente con el fin de contactarle para la auditoría solicitada.</p>
+            <p><strong>Uso de datos:</strong> Sus datos se almacenan de forma segura y se procesan automáticamente
+                mediante flujos internos para facilitarle la información requerida. No compartimos su información
+                personal con terceros con fines publicitarios.</p>
+            <p><strong>Sus derechos:</strong> Puede solicitar el acceso, rectificación o eliminación de sus datos en
+                cualquier momento enviando un correo a guillesrl@gmail.com.</p>
+            <p>Al enviar el formulario, usted acepta el tratamiento de sus datos conforme a esta política.</p>
+        </div>
+    </div>
+
+    <script>
+        const modal = document.getElementById('privacyModal');
+        const btn = document.getElementById('privacyBtn');
+        const close = document.getElementById('closeModal');
+
+        btn.onclick = () => modal.style.display = 'flex';
+        close.onclick = () => modal.style.display = 'none';
+        window.onclick = (e) => {
+            if (e.target == modal) modal.style.display = 'none';
+        }
+    </script>
 
 </body>
 
