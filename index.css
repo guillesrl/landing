@@ -405,6 +405,7 @@ footer {
 
     .why-grid {
         grid-template-columns: 1fr;
+        gap: 2rem;
     }
 
     .hero {
@@ -426,5 +427,13 @@ footer {
         flex-direction: column;
         gap: 3rem;
         text-align: center;
+    }
+
+    .why-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .stat-card {
+        padding: 1.5rem;
     }
 }
