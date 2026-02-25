@@ -130,6 +130,11 @@
                     específicamente para ti.</p>
 
                 <form id="contactForm" class="contact-form">
+                    <!-- Honeypot (trampa para bots) -->
+                    <div style="display:none;">
+                        <input type="text" name="b_website_url" tabindex="-1" autocomplete="off">
+                    </div>
+
                     <input type="text" name="Nombre" placeholder="Tu nombre" required>
                     <input type="email" name="Email" placeholder="Tu email" required>
                     <input type="tel" name="Telefono" placeholder="Tu WhatsApp" required>
@@ -157,12 +162,21 @@
                         const formData = new FormData(form);
                         const submitButton = form.querySelector('button');
 
+                        // Honeypot check (si el campo está relleno, es un bot)
+                        if (formData.get('b_website_url')) {
+                            console.warn('Spam bot detected');
+                            return;
+                        }
+
                         submitButton.disabled = true;
                         submitButton.innerText = 'Enviando...';
 
                         try {
                             const response = await fetch('https://n8n.guillers.es/webhook/contacto-landing', {
                                 method: 'POST',
+                                headers: {
+                                    'X-Webhook-Secret': 'ia-automation-2026-secure'
+                                },
                                 body: formData
                             });
 
