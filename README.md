@@ -38,7 +38,8 @@ Sistema experto de captación para servicios de automatización a medida enfocad
 Este proyecto está optimizado para despliegues automáticos en herramientas como **Easypanel**, **Vercel** o **Netlify**.
 
 1. Clona el repositorio: `git clone https://github.com/guillesrl/landing.git`
-2. Abre `index.html` en tu navegador o levanta un servidor local: `npx serve .`
+2. Instala las dependencias: `npm install`
+3. Abre `index.html` en tu navegador o levanta un servidor local: `npm start`
 
 ## 📧 Contacto
 

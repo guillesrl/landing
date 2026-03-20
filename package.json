@@ -5,6 +5,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "serve .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -14,5 +15,8 @@
     "@modelcontextprotocol/sdk": "^1.26.0",
     "axios": "^1.13.4",
     "dotenv": "^17.2.4"
+  },
+  "devDependencies": {
+    "serve": "^14.2.6"
   }
 }
