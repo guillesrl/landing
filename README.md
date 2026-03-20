@@ -35,11 +35,18 @@ Sistema experto de captación para servicios de automatización a medida enfocad
 
 ## 🌐 Despliegue
 
-Este proyecto está optimizado para despliegues automáticos en herramientas como **Easypanel**, **Vercel** o **Netlify**.
+Este proyecto es un sitio estático (HTML + CSS + imágenes). Para deployments:
 
+### En EasyPanel:
+- Tipo de servicio: **Static Files** (no Node.js)
+- Directorio root: `/app` o `.`
+- Archivo índice: `index.html`
+- No requiere comando de inicio ni instalación de dependencias
+
+### Desarrollo local:
 1. Clona el repositorio: `git clone https://github.com/guillesrl/landing.git`
-2. Instala las dependencias: `npm install`
-3. Abre `index.html` en tu navegador o levanta un servidor local: `npm start`
+2. Abre `index.html` directamente en el navegador
+3. O usa un servidor local: `npx serve .` (opcional, requiere Node)
 
 ## 📧 Contacto
 
