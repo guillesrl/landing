@@ -1,11 +1,6 @@
 # 🤖 Automatizaciones IA - Landing Page
 
-[![GitHub Presence](https://img.shields.io/badge/GitHub-Repository-blue?logo=github)](https://github.com/guillesrl/landing)
-[![Status](https://img.shields.io/badge/Status-Live-success)](#)
-
 Sistema experto de captación para servicios de automatización a medida enfocado en sectores locales como **Inmobiliarias, Estética, Peluquerías y Restaurantes**.
-
-![Dashboard Preview](landing_page_hero_bg.png)
 
 ## 🚀 Características Premium
 
