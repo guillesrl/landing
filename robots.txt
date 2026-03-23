@@ -3,7 +3,7 @@ Allow: /
 Disallow: /admin
 Disallow: /private
 
-Sitemap: https://landing.autonomo.ai/sitemap.xml
+Sitemap: https://guillers.es/sitemap.xml
 
 User-agent: AdsBot-Google
 Allow: /
