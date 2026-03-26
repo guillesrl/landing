@@ -573,7 +573,7 @@ footer {
 
     /* Reduce vertical spacing between FAQ and contact sections */
     #contacto {
-        padding-top: 3rem !important;
+        padding-top: 5rem !important;
     }
 
     .section-padding {
