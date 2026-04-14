@@ -252,7 +252,7 @@
                         const validators = {
                             fieldNombre:   { errId: 'errNombre',   validate: v => v.trim().length >= 2 ? '' : 'Ingresá tu nombre completo.' },
                             fieldEmail:    { errId: 'errEmail',    validate: v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()) ? '' : 'Ingresá un email válido.' },
-                            fieldTelefono: { errId: 'errTelefono', validate: v => v.trim().length >= 7 ? '' : 'Ingresá un número de WhatsApp válido.' },
+                            fieldTelefono: { errId: 'errTelefono', validate: v => v.replace(/\D/g, '').length >= 6 ? '' : 'Ingresá un número de WhatsApp válido.' },
                             fieldInteres:  { errId: 'errInteres',  validate: v => v !== '' ? '' : 'Seleccioná una opción.' },
                         };
 
