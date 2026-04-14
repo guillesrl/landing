@@ -251,7 +251,7 @@
                         const submitBtn = document.getElementById('submitBtn');
                         const successMsg = document.getElementById('successMessage');
                         const errorMsg   = document.getElementById('errorMessage');
-                        const toast      = document.getElementById('scrollToast');
+                        const toast = () => document.getElementById('scrollToast');
 
                         // ── 1. CONTADORES ANIMADOS ────────────────────────────────────────
                         function animateCounter(el) {
@@ -294,7 +294,7 @@
                         });
 
                         // ── 4. TOAST (30 segundos) ───────────────────────────────────────
-                        setTimeout(() => toast.classList.add('toast-visible'), 30000);
+                        setTimeout(() => toast() && toast().classList.add('toast-visible'), 30000);
 
                         // ── 5. LOCALSTORAGE ──────────────────────────────────────────────
                         const persistIds = ['fieldNombre', 'fieldEmail', 'fieldTelefono', 'fieldInteres', 'fieldMensaje'];
@@ -370,7 +370,7 @@
                                     submitBtn.classList.add('btn-success');
                                     submitBtn.textContent = '¡Enviado! ✓';
                                     localStorage.removeItem(LS_KEY);
-                                    toast.classList.remove('toast-visible');
+                                    toast() && toast().classList.remove('toast-visible');
 
                                     setTimeout(() => {
                                         form.style.display = 'none';
