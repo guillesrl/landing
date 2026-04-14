@@ -197,71 +197,142 @@
                 <p style="margin-bottom: 2rem;">Transforma tu negocio hoy mismo con automatizaciones diseñadas
                     específicamente para ti.</p>
 
-                <form id="contactForm" class="contact-form">
+                <form id="contactForm" class="contact-form" novalidate>
                     <!-- Honeypot (trampa para bots) -->
                     <div style="display:none;">
                         <input type="text" name="b_website_url" tabindex="-1" autocomplete="off">
                     </div>
 
-                    <input type="text" name="Nombre" placeholder="Tu nombre" required>
-                    <input type="email" name="Email" placeholder="Tu email" required>
-                    <input type="tel" name="Telefono" placeholder="Tu WhatsApp" required>
-                    <select name="Interes" required
-                        style="padding: 1rem 1.5rem; border-radius: 12px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border); color: var(--text); font-size: 1rem; cursor: pointer;">
-                        <option value="" disabled selected>¿Qué te interesa automatizar?</option>
-                        <option value="Inmobiliaria">Gestión Inmobiliaria</option>
-                        <option value="Estetica/Peluqueria">Centro de Estética / Peluquería</option>
-                        <option value="Restaurante/Cafeteria">Restaurante / Cafeteria</option>
-                        <option value="Otros">Otros (Consultar)</option>
-                    </select>
-                    <button type="submit" class="btn btn-primary">Solicitar Auditoría</button>
+                    <div>
+                        <input type="text" id="fieldNombre" name="Nombre" placeholder="Tu nombre" autocomplete="name">
+                        <span class="field-error-msg" id="errNombre"></span>
+                    </div>
+                    <div>
+                        <input type="email" id="fieldEmail" name="Email" placeholder="Tu email" autocomplete="email">
+                        <span class="field-error-msg" id="errEmail"></span>
+                    </div>
+                    <div>
+                        <input type="tel" id="fieldTelefono" name="Telefono" placeholder="Tu WhatsApp" autocomplete="tel">
+                        <span class="field-error-msg" id="errTelefono"></span>
+                    </div>
+                    <div>
+                        <select id="fieldInteres" name="Interes"
+                            style="padding: 1rem 1.5rem; border-radius: 12px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border); color: var(--text); font-size: 1rem; cursor: pointer; width: 100%;">
+                            <option value="" disabled selected>¿Qué te interesa automatizar?</option>
+                            <option value="Inmobiliaria">Gestión Inmobiliaria</option>
+                            <option value="Estetica/Peluqueria">Centro de Estética / Peluquería</option>
+                            <option value="Restaurante/Cafeteria">Restaurante / Cafeteria</option>
+                            <option value="Otros">Otros (Consultar)</option>
+                        </select>
+                        <span class="field-error-msg" id="errInteres"></span>
+                    </div>
+                    <button type="submit" id="submitBtn" class="btn btn-primary" style="margin-top: 0.5rem;">Solicitar Auditoría</button>
                 </form>
 
-                <div id="successMessage"
-                    style="display: none; padding: 2.5rem; background: rgba(16, 185, 129, 0.1); border: 1px solid #10b981; border-radius: 20px; margin-top: 1rem;">
-                    <h3 style="color: #10b981; margin-bottom: 0.5rem;">¡Recibido con éxito! 🚀</h3>
-                    <p>Gracias, nos contactaremos lo antes posible.</p>
+                <!-- Mensaje de éxito -->
+                <div id="successMessage" class="form-feedback feedback-success">
+                    <h3>¡Recibido con éxito! 🚀</h3>
+                    <p>Gracias <span id="successNombre"></span>, te contactaremos en menos de 24 horas.</p>
+                </div>
+
+                <!-- Mensaje de error -->
+                <div id="errorMessage" class="form-feedback feedback-error">
+                    <h3>Algo salió mal 😕</h3>
+                    <p id="errorText">No pudimos enviar tu solicitud. Por favor, intentalo de nuevo o escríbenos directamente a <a href="mailto:guillesrl@gmail.com" style="color: #ef4444;">guillesrl@gmail.com</a>.</p>
                 </div>
 
                 <script>
-                    document.getElementById('contactForm').addEventListener('submit', async function (e) {
-                        e.preventDefault();
-                        const form = e.target;
-                        const formData = new FormData(form);
-                        const submitButton = form.querySelector('button');
+                    (function () {
+                        const form = document.getElementById('contactForm');
+                        const submitBtn = document.getElementById('submitBtn');
+                        const successMsg = document.getElementById('successMessage');
+                        const errorMsg = document.getElementById('errorMessage');
 
-                        // Honeypot check (si el campo está relleno, es un bot)
-                        if (formData.get('b_website_url')) {
-                            console.warn('Spam bot detected');
-                            return;
-                        }
+                        // --- Validación por campo ---
+                        const validators = {
+                            fieldNombre:   { errId: 'errNombre',   validate: v => v.trim().length >= 2 ? '' : 'Ingresá tu nombre completo.' },
+                            fieldEmail:    { errId: 'errEmail',    validate: v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()) ? '' : 'Ingresá un email válido.' },
+                            fieldTelefono: { errId: 'errTelefono', validate: v => v.trim().length >= 7 ? '' : 'Ingresá un número de WhatsApp válido.' },
+                            fieldInteres:  { errId: 'errInteres',  validate: v => v !== '' ? '' : 'Seleccioná una opción.' },
+                        };
 
-                        submitButton.disabled = true;
-                        submitButton.innerText = 'Enviando...';
+                        function validateField(fieldId) {
+                            const field = document.getElementById(fieldId);
+                            const { errId, validate } = validators[fieldId];
+                            const errEl = document.getElementById(errId);
+                            const msg = validate(field.value);
 
-                        try {
-                            const response = await fetch('https://n8n.guillers.es/webhook/contacto-landing', {
-                                method: 'POST',
-                                headers: {
-                                    'X-Webhook-Secret': 'ia-automation-2026-secure'
-                                },
-                                body: formData
-                            });
-
-                            // Consideramos éxito incluso si n8n devuelve el JSON de inicio del workflow
-                            if (response.ok || response.status === 200) {
-                                form.style.display = 'none';
-                                document.getElementById('successMessage').style.display = 'block';
+                            errEl.textContent = msg;
+                            if (msg) {
+                                field.classList.add('input-error');
+                                field.classList.remove('input-success');
                             } else {
-                                throw new Error('Error en el envío');
+                                field.classList.remove('input-error');
+                                field.classList.add('input-success');
                             }
-                        } catch (error) {
-                            console.error('Error:', error);
-                            alert('Hubo un error al enviar. Por favor, inténtalo de nuevo.');
-                            submitButton.disabled = false;
-                            submitButton.innerText = 'Solicitar Auditoría IA';
+                            return msg === '';
                         }
-                    });
+
+                        // Validar en tiempo real al salir del campo
+                        Object.keys(validators).forEach(fieldId => {
+                            const field = document.getElementById(fieldId);
+                            field.addEventListener('blur', () => validateField(fieldId));
+                            field.addEventListener('input', () => {
+                                if (field.classList.contains('input-error')) validateField(fieldId);
+                            });
+                        });
+
+                        // --- Submit ---
+                        form.addEventListener('submit', async function (e) {
+                            e.preventDefault();
+
+                            // Honeypot check
+                            if (new FormData(form).get('b_website_url')) return;
+
+                            // Validar todos los campos
+                            const allValid = Object.keys(validators).map(validateField).every(Boolean);
+                            if (!allValid) {
+                                const firstError = form.querySelector('.input-error');
+                                if (firstError) firstError.focus();
+                                return;
+                            }
+
+                            // Estado de carga
+                            const nombreValue = document.getElementById('fieldNombre').value.trim().split(' ')[0];
+                            submitBtn.disabled = true;
+                            submitBtn.classList.add('btn-loading');
+                            submitBtn.textContent = 'Enviando...';
+                            errorMsg.style.display = 'none';
+
+                            try {
+                                const response = await fetch('https://n8n.guillers.es/webhook/contacto-landing', {
+                                    method: 'POST',
+                                    headers: { 'X-Webhook-Secret': 'ia-automation-2026-secure' },
+                                    body: new FormData(form)
+                                });
+
+                                if (response.ok || response.status === 200) {
+                                    form.style.display = 'none';
+                                    document.getElementById('successNombre').textContent = nombreValue + ',';
+                                    successMsg.style.display = 'block';
+                                    successMsg.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                } else {
+                                    throw new Error('HTTP ' + response.status);
+                                }
+                            } catch (error) {
+                                console.error('Error al enviar formulario:', error);
+                                document.getElementById('errorText').innerHTML =
+                                    'No pudimos enviar tu solicitud (error ' + (error.message || 'desconocido') + '). ' +
+                                    'Intentalo de nuevo o escríbenos a <a href="mailto:guillesrl@gmail.com" style="color:#ef4444;">guillesrl@gmail.com</a>.';
+                                errorMsg.style.display = 'block';
+                                errorMsg.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+                                submitBtn.disabled = false;
+                                submitBtn.classList.remove('btn-loading');
+                                submitBtn.textContent = 'Solicitar Auditoría';
+                            }
+                        });
+                    })();
                 </script>
 
                 <p style="margin-top: 1.5rem; font-size: 0.8rem; color: var(--text-muted);">Sin compromiso |
