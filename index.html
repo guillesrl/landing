@@ -299,6 +299,14 @@
 
                             // Estado de carga
                             const nombreValue = document.getElementById('fieldNombre').value.trim().split(' ')[0];
+
+                            // Prefijo Andorra: si el teléfono tiene 6 dígitos o menos, agregar 376
+                            const telField = document.getElementById('fieldTelefono');
+                            const telDigits = telField.value.replace(/\D/g, '');
+                            if (telDigits.length <= 6) {
+                                telField.value = '376' + telField.value.trim();
+                            }
+
                             submitBtn.disabled = true;
                             submitBtn.classList.add('btn-loading');
                             submitBtn.textContent = 'Enviando...';
@@ -313,7 +321,7 @@
 
                                 if (response.ok || response.status === 200) {
                                     form.style.display = 'none';
-                                    document.getElementById('successNombre').textContent = nombreValue + ',';
+                                    document.getElementById('successNombre').textContent = nombreValue;
                                     successMsg.style.display = 'block';
                                     successMsg.scrollIntoView({ behavior: 'smooth', block: 'center' });
                                 } else {
