@@ -143,11 +143,11 @@
                 </div>
                 <div class="why-stats">
                     <div class="stat-card">
-                        <span class="stat-number">+120%</span>
+                        <span class="stat-number" data-target="120" data-prefix="+" data-suffix="%">+120%</span>
                         <p>Aumento en Conversión</p>
                     </div>
                     <div class="stat-card">
-                        <span class="stat-number">-90%</span>
+                        <span class="stat-number" data-target="90" data-prefix="-" data-suffix="%">-90%</span>
                         <p>Citas Fallidas</p>
                     </div>
                     <div class="stat-card">
@@ -155,7 +155,7 @@
                         <p>Disponibilidad Total</p>
                     </div>
                     <div class="stat-card">
-                        <span class="stat-number">0</span>
+                        <span class="stat-number" data-target="0" data-from="10">0</span>
                         <p>Errores de Agenda</p>
                     </div>
                 </div>
@@ -226,6 +226,9 @@
                         </select>
                         <span class="field-error-msg" id="errInteres"></span>
                     </div>
+                    <div>
+                        <textarea id="fieldMensaje" name="Mensaje" placeholder="Contanos brevemente tu negocio (opcional)"></textarea>
+                    </div>
                     <button type="submit" id="submitBtn" class="btn btn-primary" style="margin-top: 0.5rem;">Solicitar Auditoría</button>
                 </form>
 
@@ -243,12 +246,74 @@
 
                 <script>
                     (function () {
-                        const form = document.getElementById('contactForm');
+                        const LS_KEY = 'autonomo_form';
+                        const form      = document.getElementById('contactForm');
                         const submitBtn = document.getElementById('submitBtn');
                         const successMsg = document.getElementById('successMessage');
-                        const errorMsg = document.getElementById('errorMessage');
+                        const errorMsg   = document.getElementById('errorMessage');
+                        const toast      = document.getElementById('scrollToast');
 
-                        // --- Validación por campo ---
+                        // ── 1. CONTADORES ANIMADOS ────────────────────────────────────────
+                        function animateCounter(el) {
+                            const prefix   = el.dataset.prefix || '';
+                            const suffix   = el.dataset.suffix || '';
+                            const target   = parseInt(el.dataset.target, 10);
+                            const from     = parseInt(el.dataset.from   || '0', 10);
+                            const duration = 1800;
+                            const start    = performance.now();
+                            const ease = t => 1 - Math.pow(1 - t, 4);
+                            function tick(now) {
+                                const t = Math.min((now - start) / duration, 1);
+                                el.textContent = prefix + Math.round(from + (target - from) * ease(t)) + suffix;
+                                if (t < 1) requestAnimationFrame(tick);
+                            }
+                            requestAnimationFrame(tick);
+                        }
+
+                        const statObs = new IntersectionObserver(entries => {
+                            entries.forEach(e => {
+                                if (e.isIntersecting && e.target.dataset.target !== undefined) {
+                                    animateCounter(e.target);
+                                    statObs.unobserve(e.target);
+                                }
+                            });
+                        }, { threshold: 0.5 });
+                        document.querySelectorAll('.stat-number[data-target]').forEach(el => statObs.observe(el));
+
+                        // ── 3. FORMATEO DE TELÉFONO ──────────────────────────────────────
+                        document.getElementById('fieldTelefono').addEventListener('input', function () {
+                            const digits = this.value.replace(/\D/g, '');
+                            if (digits.length === 0) { this.value = ''; return; }
+                            if (digits.startsWith('376') && digits.length > 6) {
+                                this.value = '+376 ' + digits.slice(3, 6) + (digits.length > 6 ? ' ' + digits.slice(6, 9) : '');
+                            } else if (digits.length <= 6) {
+                                this.value = digits.slice(0, 3) + (digits.length > 3 ? ' ' + digits.slice(3) : '');
+                            } else {
+                                this.value = this.value; // dejar como está si tiene prefijo distinto
+                            }
+                        });
+
+                        // ── 4. TOAST (30 segundos) ───────────────────────────────────────
+                        setTimeout(() => toast.classList.add('toast-visible'), 30000);
+
+                        // ── 5. LOCALSTORAGE ──────────────────────────────────────────────
+                        const persistIds = ['fieldNombre', 'fieldEmail', 'fieldTelefono', 'fieldInteres', 'fieldMensaje'];
+
+                        function saveForm() {
+                            const data = {};
+                            persistIds.forEach(id => { const el = document.getElementById(id); if (el) data[id] = el.value; });
+                            localStorage.setItem(LS_KEY, JSON.stringify(data));
+                        }
+                        try {
+                            const saved = JSON.parse(localStorage.getItem(LS_KEY) || '{}');
+                            persistIds.forEach(id => { const el = document.getElementById(id); if (el && saved[id]) el.value = saved[id]; });
+                        } catch (_) {}
+                        persistIds.forEach(id => {
+                            const el = document.getElementById(id);
+                            if (el) { el.addEventListener('input', saveForm); el.addEventListener('change', saveForm); }
+                        });
+
+                        // ── 2+6. VALIDACIÓN Y ENVÍO ──────────────────────────────────────
                         const validators = {
                             fieldNombre:   { errId: 'errNombre',   validate: v => v.trim().length >= 2 ? '' : 'Ingresá tu nombre completo.' },
                             fieldEmail:    { errId: 'errEmail',    validate: v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()) ? '' : 'Ingresá un email válido.' },
@@ -261,51 +326,31 @@
                             const { errId, validate } = validators[fieldId];
                             const errEl = document.getElementById(errId);
                             const msg = validate(field.value);
-
                             errEl.textContent = msg;
-                            if (msg) {
-                                field.classList.add('input-error');
-                                field.classList.remove('input-success');
-                            } else {
-                                field.classList.remove('input-error');
-                                field.classList.add('input-success');
-                            }
-                            return msg === '';
+                            field.classList.toggle('input-error',   !!msg);
+                            field.classList.toggle('input-success', !msg);
+                            return !msg;
                         }
 
-                        // Validar en tiempo real al salir del campo
                         Object.keys(validators).forEach(fieldId => {
                             const field = document.getElementById(fieldId);
-                            field.addEventListener('blur', () => validateField(fieldId));
-                            field.addEventListener('input', () => {
-                                if (field.classList.contains('input-error')) validateField(fieldId);
-                            });
+                            field.addEventListener('blur',  () => validateField(fieldId));
+                            field.addEventListener('input', () => { if (field.classList.contains('input-error')) validateField(fieldId); });
                         });
 
-                        // --- Submit ---
                         form.addEventListener('submit', async function (e) {
                             e.preventDefault();
-
-                            // Honeypot check
                             if (new FormData(form).get('b_website_url')) return;
 
-                            // Validar todos los campos
                             const allValid = Object.keys(validators).map(validateField).every(Boolean);
-                            if (!allValid) {
-                                const firstError = form.querySelector('.input-error');
-                                if (firstError) firstError.focus();
-                                return;
-                            }
+                            if (!allValid) { const f = form.querySelector('.input-error'); if (f) f.focus(); return; }
 
-                            // Estado de carga
                             const nombreValue = document.getElementById('fieldNombre').value.trim().split(' ')[0];
 
-                            // Prefijo Andorra: si el teléfono tiene 6 dígitos o menos, agregar 376
-                            const telField = document.getElementById('fieldTelefono');
+                            // Prefijo Andorra
+                            const telField  = document.getElementById('fieldTelefono');
                             const telDigits = telField.value.replace(/\D/g, '');
-                            if (telDigits.length <= 6) {
-                                telField.value = '376' + telField.value.trim();
-                            }
+                            if (telDigits.length <= 6) telField.value = '376' + telField.value.trim();
 
                             submitBtn.disabled = true;
                             submitBtn.classList.add('btn-loading');
@@ -320,10 +365,19 @@
                                 });
 
                                 if (response.ok || response.status === 200) {
-                                    form.style.display = 'none';
-                                    document.getElementById('successNombre').textContent = nombreValue;
-                                    successMsg.style.display = 'block';
-                                    successMsg.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                    // 2. Checkmark animado antes de mostrar mensaje
+                                    submitBtn.classList.remove('btn-loading');
+                                    submitBtn.classList.add('btn-success');
+                                    submitBtn.textContent = '¡Enviado! ✓';
+                                    localStorage.removeItem(LS_KEY);
+                                    toast.classList.remove('toast-visible');
+
+                                    setTimeout(() => {
+                                        form.style.display = 'none';
+                                        document.getElementById('successNombre').textContent = nombreValue;
+                                        successMsg.style.display = 'block';
+                                        successMsg.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                    }, 900);
                                 } else {
                                     throw new Error('HTTP ' + response.status);
                                 }
@@ -334,7 +388,6 @@
                                     'Intentalo de nuevo o escríbenos a <a href="mailto:guillesrl@gmail.com" style="color:#ef4444;">guillesrl@gmail.com</a>.';
                                 errorMsg.style.display = 'block';
                                 errorMsg.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
                                 submitBtn.disabled = false;
                                 submitBtn.classList.remove('btn-loading');
                                 submitBtn.textContent = 'Solicitar Auditoría';
@@ -404,6 +457,13 @@
             if (e.target == modal) modal.style.display = 'none';
         }
     </script>
+
+    <!-- Scroll Toast -->
+    <div id="scrollToast" class="scroll-toast">
+        <span>¿Listo para empezar?</span>
+        <a href="#contacto" class="scroll-toast-btn" onclick="document.getElementById('scrollToast').classList.remove('toast-visible')">Solicitar Auditoría →</a>
+        <button class="scroll-toast-close" aria-label="Cerrar" onclick="this.parentElement.classList.remove('toast-visible')">×</button>
+    </div>
 
     <!-- WhatsApp Floating Button -->
     <a href="https://wa.me/376615808?text=Hola,%20me%20interesa%20información%20sobre%20automatizaciones%20IA"
