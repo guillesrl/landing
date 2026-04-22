@@ -46,8 +46,7 @@
 ## Datos de Contacto
 - **Teléfono**: +376 615808
 - **Email**: guillesrl@gmail.com
-- **Webhook n8n**: `https://n8n.guillers.es/webhook/contacto-landing`
-- **Webhook Secret**: `ia-automation-2026-secure`
+- **Webhook n8n**: configurado en index.html (no exponer URL/secret en docs)
 
 ## Consideraciones Técnicas
 - No usar `npm` en producción (eliminado)
