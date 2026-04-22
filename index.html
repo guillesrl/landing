@@ -104,7 +104,7 @@
         </div>
     </header>
 
-    <section class="section-padding">
+    <section class="section-padding" id="section-features">
         <div class="container">
             <div style="text-align: center; max-width: 700px; margin: 0 auto 4rem;">
                 <span class="feature-badge">⚡ EFICIENCIA OPERATIVA</span>
@@ -119,24 +119,24 @@
                     <div class="feature-badge">🏠 INMOBILIARIAS</div>
                     <span class="text-gradient">Calificación Automática</span>
                     <p>Filtra prospectos y agenda visitas a propiedades 24/7 sin intervención manual.</p>
-                    <a href="#contacto" class="btn btn-secondary card-cta" onclick="document.getElementById('fieldInteres').value='Inmobiliaria'">Quiero esto para mi negocio →</a>
+                    <a href="#contacto" class="btn btn-secondary card-cta" onclick="document.getElementById('fieldInteres').value='Inmobiliaria'; gtag('event', 'cta_click', {cta_location: 'card_inmobiliaria', cta_text: 'Quiero esto para mi negocio', industry: 'Inmobiliaria', section: 'pas_problem'})">Quiero esto para mi negocio →</a>
                 </div>
                 <div class="glass-card card-fade">
                     <div class="feature-badge">💅 ESTÉTICA & PELUQUERIA</div>
                     <span class="text-gradient">Cero Citas Perdidas</span>
                     <p>Recordatorios por WhatsApp que reducen el ausentismo en un 90% automáticamente.</p>
-                    <a href="#contacto" class="btn btn-secondary card-cta" onclick="document.getElementById('fieldInteres').value='Estetica/Peluqueria'">Quiero esto para mi negocio →</a>
+                    <a href="#contacto" class="btn btn-secondary card-cta" onclick="document.getElementById('fieldInteres').value='Estetica/Peluqueria'; gtag('event', 'cta_click', {cta_location: 'card_estetica', cta_text: 'Quiero esto para mi negocio', industry: 'Estetica/Peluqueria', section: 'pas_problem'})">Quiero esto para mi negocio →</a>
                 </div>
                 <div class="glass-card card-fade">
                     <div class="feature-badge">🍽️ RESTAURANTES</div>
                     <span class="text-gradient">Reservas Inteligentes</span>
                     <p>Gestión de mesas y pedidos automatizada que libera a tu personal en horas punta.</p>
-                    <a href="#contacto" class="btn btn-secondary card-cta" onclick="document.getElementById('fieldInteres').value='Restaurante/Cafeteria'">Quiero esto para mi negocio →</a>
+                    <a href="#contacto" class="btn btn-secondary card-cta" onclick="document.getElementById('fieldInteres').value='Restaurante/Cafeteria'; gtag('event', 'cta_click', {cta_location: 'card_restaurante', cta_text: 'Quiero esto para mi negocio', industry: 'Restaurante/Cafeteria', section: 'pas_problem'})">Quiero esto para mi negocio →</a>
                 </div>
             </div>
         </div>
     </section>
-    <section class="section-padding">
+    <section class="section-padding" id="section-proceso">
         <div class="container">
             <h2 style="text-align: center;">¿Cómo funciona? <span class="text-gradient">En 3 pasos</span></h2>
             <p style="text-align: center; max-width: 600px; margin: 0 auto 2rem; color: var(--text-muted);">
@@ -162,7 +162,7 @@
         </div>
     </section>
 
-    <section class="section-padding" style="background: var(--dark-surface);">
+    <section class="section-padding" id="section-ventajas" style="background: var(--dark-surface);">
         <div class="container">
             <div class="why-grid">
                 <div>
@@ -198,7 +198,7 @@
         </div>
     </section>
 
-    <section class="section-padding">
+    <section class="section-padding" id="section-faq">
         <div class="container">
             <h2 style="text-align: center;">Preguntas <span class="text-gradient">Frecuentes</span></h2>
             <div class="faq-list">
@@ -404,7 +404,8 @@
                                     localStorage.removeItem(LS_KEY);
                                     toast() && toast().classList.remove('toast-visible');
                                     gtag('event', 'form_submit', {
-                                        industry: document.getElementById('fieldInteres').value
+                                        industry: document.getElementById('fieldInteres').value,
+                                        last_section_viewed: window._lastSectionViewed || 'unknown'
                                     });
 
                                     setTimeout(() => {
@@ -448,8 +449,8 @@
                 </div>
                 <div>
                     <h4>Contacto</h4>
-                    <p style="margin-top: 1rem;">☏ +376 615808</p>
-                    <p>✉ guillesrl@gmail.com</p>
+                    <p style="margin-top: 1rem;"><a href="tel:+376615808" style="color: inherit; text-decoration: none;" onclick="gtag('event', 'contact_click', {contact_type: 'phone', location: 'footer'})">☏ +376 615808</a></p>
+                    <p><a href="mailto:guillesrl@gmail.com" style="color: inherit; text-decoration: none;" onclick="gtag('event', 'contact_click', {contact_type: 'email', location: 'footer'})">✉ guillesrl@gmail.com</a></p>
                 </div>
                 <div>
                     <h4>Legal</h4>
@@ -505,6 +506,52 @@
             <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
         </svg>
     </a>
+
+    <script>
+        // PAS/AIDA section funnel + scroll depth tracking
+        (function () {
+            window._lastSectionViewed = 'direct';
+
+            const sectionMap = {
+                'hero':             'hero_attention',
+                'section-features': 'pas_problem',
+                'section-proceso':  'solution_steps',
+                'section-ventajas': 'aida_desire',
+                'section-faq':      'objections',
+                'contacto':         'action_cta'
+            };
+
+            const sectionObs = new IntersectionObserver(function (entries) {
+                entries.forEach(function (e) {
+                    if (e.isIntersecting) {
+                        var label = sectionMap[e.target.id];
+                        if (label) {
+                            window._lastSectionViewed = label;
+                            gtag('event', 'section_view', { section: label });
+                        }
+                    }
+                });
+            }, { threshold: 0.35 });
+
+            Object.keys(sectionMap).forEach(function (id) {
+                var el = document.getElementById(id);
+                if (el) sectionObs.observe(el);
+            });
+
+            // Scroll depth milestones
+            var depths = [25, 50, 75, 90];
+            var firedDepths = {};
+            window.addEventListener('scroll', function () {
+                var scrolled = (window.scrollY + window.innerHeight) / document.documentElement.scrollHeight * 100;
+                depths.forEach(function (d) {
+                    if (!firedDepths[d] && scrolled >= d) {
+                        firedDepths[d] = true;
+                        gtag('event', 'scroll_depth', { percent: d });
+                    }
+                });
+            }, { passive: true });
+        })();
+    </script>
 
     <script>
         // Card fade-in on scroll
